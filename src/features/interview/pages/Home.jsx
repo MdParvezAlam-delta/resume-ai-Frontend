@@ -17,14 +17,25 @@ const Home = () => {
     const handleGenerateReport = async () => {
         setError("")
         const resumeFile = resumeInputRef.current.files[ 0 ]
-        const data = await generateReport({ jobDescription, selfDescription, resumeFile })
+        
+        try {
+            const data = await generateReport({ jobDescription, selfDescription, resumeFile })
 
-        if (!data || !data._id) {
-            setError("Could not generate report. Please try again.")
-            return
+            if (!data || !data._id) {
+                setError("Could not generate report. Please try again.")
+                return
+            }
+
+            navigate(`/interview/${data._id}`)
+        } catch (err) {
+            if (err.response?.status === 401) {
+                setError("You are not authenticated. Please log in again.")
+            } else if (err.response?.data?.message) {
+                setError(err.response.data.message)
+            } else {
+                setError(err.message || "Failed to generate report. Please try again.")
+            }
         }
-
-        navigate(`/interview/${data._id}`)
     }
 
     if (loading) {
