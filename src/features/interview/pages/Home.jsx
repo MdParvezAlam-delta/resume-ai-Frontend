@@ -12,9 +12,18 @@ const Home = () => {
 
     const navigate = useNavigate()
 
+    const [ error, setError ] = useState("")
+
     const handleGenerateReport = async () => {
+        setError("")
         const resumeFile = resumeInputRef.current.files[ 0 ]
         const data = await generateReport({ jobDescription, selfDescription, resumeFile })
+
+        if (!data || !data._id) {
+            setError("Could not generate report. Please try again.")
+            return
+        }
+
         navigate(`/interview/${data._id}`)
     }
 
@@ -119,6 +128,7 @@ const Home = () => {
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" /></svg>
                         Generate My Interview Strategy
                     </button>
+                    {error && <p className='form-error' style={{ color: 'red', marginTop: '1rem' }}>{error}</p>}
                 </div>
             </div>
 

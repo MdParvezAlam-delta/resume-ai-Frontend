@@ -2,8 +2,8 @@ import axios from "axios"
 
 
 const api = axios.create({
-    baseURL: "https://resume-ai-backend-dh0x.onrender.com",
-    withCredentials: true                                                                             // Axios by default doesn't give access to cookies .if we make it true then when we request to backend via the axios then the server has the access the cookies to read and set the data .
+    baseURL: import.meta.env.VITE_API_URL ?? "https://resume-ai-backend-dh0x.onrender.com",
+    withCredentials: true                                                                             // Axios by default doesn't give access to cookies. If we set this to true, the server can read and set cookies from the backend response.
 })
 
 // Create the register Api for interaction frontend to backend
@@ -25,20 +25,15 @@ export async function register({ username, email, password }) {
 }
 
 // Create the login Api for interaction frontend to backend
+
 export async function login({ email, password }) {
-
-    try {
-
-        const response = await api.post("/api/auth/login", {
-            email, password
-        })
-
-        return response.data
-
-    } catch (err) {
-        console.log(err)
-    }
-
+  try {
+    const response = await api.post("/api/auth/login", { email, password });
+    return response.data;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 }
 
 // Create the logout Api for interaction frontend to backend
